@@ -4,21 +4,18 @@ name: "Doc testing"
 
 on:
   # For a pull_request event, only branches and tags on the base are evaluated.
-  pull_request:
+  push:
+    branches-ignore:
+      - main   # excludes master
 
 jobs:
   pre_commit:
     name: Run pre-commit validation hooks
-    runs-on: ubuntu-20.04
-    container: avdteam/base:3.8-v2.0
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install requirements
-        run: |
-          pip install pre-commit
-      - name: Run pre-commit
-        run: |
-          pre-commit run --all-files --color always
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+    - uses: pre-commit/action@v3.0.0
 
   vale:
     name: runner / vale
@@ -30,3 +27,6 @@ jobs:
           # Required, set by GitHub actions automatically:
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          files: avd-project/
+          reporter: github-check
