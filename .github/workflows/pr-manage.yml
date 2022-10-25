@@ -4,7 +4,9 @@ name: "Doc testing"
 
 on:
   # For a pull_request event, only branches and tags on the base are evaluated.
-  pull_request:
+  push:
+    branches-ignore:
+      - main   # excludes master
 
 jobs:
   pre_commit:
