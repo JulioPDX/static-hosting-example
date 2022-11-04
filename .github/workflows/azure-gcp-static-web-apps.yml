@@ -38,17 +38,18 @@ jobs:
           ###### End of Repository/Build Configurations ######
 
       ###### GCP push portion ######
-      - id: 'auth'
+      - id: auth
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-      - name: 'Set up Cloud SDK'
+      - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v0'
 
-      - name: 'Use gcloud CLI'
-        run: 'push updated site to bucket'
-      - run: gsutil -m rsync -d -c -r site gs://juliopdx-static
+      - name: Use gcloud CLI
+        run: 'gcloud info'
+      - name: Push updated files to bucket
+        run: gsutil -m rsync -d -c -r site gs://juliopdx-static
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
