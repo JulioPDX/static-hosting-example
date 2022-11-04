@@ -47,7 +47,7 @@ jobs:
         uses: 'google-github-actions/setup-gcloud@v0'
 
       - name: 'Use gcloud CLI'
-        run: 'gcloud info'
+        run: 'push updated site to bucket'
       - run: gsutil -m rsync -d -c -r site gs://juliopdx-static
 
   close_pull_request_job:
