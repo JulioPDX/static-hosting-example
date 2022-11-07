@@ -1,0 +1,96 @@
+name: static-hosting-example
+description: Static hosting on GCP
+runtime: yaml
+resources:
+  # Create storage bucket
+  web-bucket:
+    type: gcp:storage:Bucket
+    properties:
+      website:
+        mainPageSuffix: index.html
+        notFoundPage: 404.html
+      location: US
+      uniformBucketLevelAccess: true
+      forceDestroy: true
+
+  # Enable public access to view site
+  web-bucket-binding:
+    type: gcp:storage:BucketIAMBinding
+    properties:
+      bucket: ${web-bucket.name}
+      role: "roles/storage.objectViewer"
+      members: ["allUsers"]
+
+  # Global address
+  webglobaladdress:
+    type: gcp:compute:GlobalAddress
+
+  # GCP managed cert with list of domains
+  managedcert:
+    type: gcp:compute:ManagedSslCertificate
+    properties:
+      managed:
+        domains:
+        - juliopdx.org
+        - www.juliopdx.org
+
+  # backend service leveraging our storage bucket
+  sitebackend:
+    type: gcp:compute:BackendBucket
+    properties:
+      description: Contains a sweet site
+      bucketName: ${web-bucket.name}
+      enableCdn: true
+      cdnPolicy:
+        cacheMode: CACHE_ALL_STATIC
+        clientTtl: 300
+        defaultTtl: 300
+        maxTtl: 1800
+
+  # Basic URL map pointing to backend
+  webservicepaths:
+    type: gcp:compute:URLMap
+    properties:
+      defaultService: ${sitebackend.id}
+
+  # HTTP proxy leveraging managed cert
+  httpsproxy:
+    type: gcp:compute:TargetHttpsProxy
+    properties:
+      urlMap: ${webservicepaths.selfLink}
+      sslCertificates:
+      - ${managedcert.id}
+
+  # Forwarding rule pointing to HTTPS proxy
+  defaultglobalforwardingrule:
+    type: gcp:compute:GlobalForwardingRule
+    properties:
+      target: ${httpsproxy.id}
+      portRange: 443
+      loadBalancingScheme: EXTERNAL_MANAGED
+      ipAddress: ${webglobaladdress.id}
+
+  # HTTP to HTTPS redirect
+  redirecturlmap:
+    type: gcp:compute:URLMap
+    properties:
+      defaultUrlRedirect:
+        httpsRedirect: true
+        stripQuery: false
+
+  redirecttargethttpproxy:
+    type: gcp:compute:TargetHttpProxy
+    properties:
+      urlMap: ${redirecturlmap.id}
+
+  redirectglobalforwardingrule:
+    type: gcp:compute:GlobalForwardingRule
+    properties:
+      loadBalancingScheme: EXTERNAL_MANAGED
+      target: ${redirecttargethttpproxy.id}
+      portRange: 80
+
+outputs:
+    # Export the DNS name of the bucket
+    bucketName: ${web-bucket.url}
+    publicaddress: ${webglobaladdress.id}
