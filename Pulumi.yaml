@@ -29,6 +29,7 @@ resources:
   managedcert:
     type: gcp:compute:ManagedSslCertificate
     properties:
+      description: Some sweet cert
       managed:
         domains:
         - juliopdx.org
