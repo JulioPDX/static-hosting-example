@@ -17,4 +17,5 @@ repos:
         name: Check for Linting errors on MarkDown files
         args:
           - --config=.github/.markdownlint.yaml
+          - --ignore-path=.github/.markdownlintignore
           - --fix

@@ -33,10 +33,6 @@ MD013:
 MD024:
   siblings_only: true
 
-# Ignore multiple H1 headings
-MD025:
-  false
-
 # MD029/ol-prefix - Ordered list item prefix
 MD029:
   # List style

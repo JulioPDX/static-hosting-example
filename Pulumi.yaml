@@ -74,28 +74,9 @@ resources:
   redirecturlmap:
     type: gcp:compute:URLMap
     properties:
-      defaultService: ${sitebackend.id}
-      hostRules:
-        - hosts:
-            - juliopdx.org
-            - www.juliopdx.org
-          pathMatcher: all-paths
-      pathMatchers:
-        - name: all-paths
-          # defaultService: ${sitebackend.id}
-          defaultUrlRedirect:
-            httpsRedirect: true
-            stripQuery: false
-          # pathRules:
-          #   - paths:
-          #       - /*
-          #     service: ${sitebackend.id}
-          #     urlRedirect:
-          #       stripQuery: false
-          #       httpsRedirect:
-      # defaultUrlRedirect:
-      #   httpsRedirect: true
-      #   stripQuery: false
+      defaultUrlRedirect:
+        httpsRedirect: true
+        stripQuery: false
 
   redirecttargethttpproxy:
     type: gcp:compute:TargetHttpProxy
@@ -108,6 +89,7 @@ resources:
       loadBalancingScheme: EXTERNAL_MANAGED
       target: ${redirecttargethttpproxy.id}
       portRange: 80
+      ipAddress: ${webglobaladdress.id}
 
 outputs:
     # Export the DNS name of the bucket
