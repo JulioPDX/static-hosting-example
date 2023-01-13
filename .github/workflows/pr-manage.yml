@@ -31,22 +31,22 @@ jobs:
           files: avd-project/
           reporter: github-check
 
-  pulumi-gcp-preview:
-    name: runner / pulumi
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+  # pulumi-gcp-preview:
+  #   name: runner / pulumi
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
       ###### GCP connect ######
-      - name: gcp auth
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
-      - name: pulumi preview
-        uses: pulumi/actions@v3
-        with:
-          command: preview
-          stack-name: dev
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      # - name: gcp auth
+      #   uses: 'google-github-actions/auth@v0'
+      #   with:
+      #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      # - name: Set up Cloud SDK
+      #   uses: 'google-github-actions/setup-gcloud@v0'
+      # - name: pulumi preview
+      #   uses: pulumi/actions@v3
+      #   with:
+      #     command: preview
+      #     stack-name: dev
+      #   env:
+      #     PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

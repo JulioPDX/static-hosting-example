@@ -23,24 +23,24 @@ jobs:
       - run: mkdocs build
 
       ###### GCP push portion ######
-      - name: auth
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      # - name: auth
+      #   uses: 'google-github-actions/auth@v0'
+      #   with:
+      #     credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v0'
+      # - name: Set up Cloud SDK
+      #   uses: 'google-github-actions/setup-gcloud@v0'
 
-      - name: Use gcloud CLI
-        run: 'gcloud info'
+      # - name: Use gcloud CLI
+      #   run: 'gcloud info'
 
-      - name: deploy infrastructure pulumi
-        uses: pulumi/actions@v3
-        with:
-          command: up
-          stack-name: dev
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      # - name: deploy infrastructure pulumi
+      #   uses: pulumi/actions@v3
+      #   with:
+      #     command: up
+      #     stack-name: dev
+      #   env:
+      #     PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
-      - name: Push updated files to bucket
-        run: gsutil -m rsync -d -c -r site $(pulumi stack output bucketName)
+      # - name: Push updated files to bucket
+      #   run: gsutil -m rsync -d -c -r site $(pulumi stack output bucketName)
